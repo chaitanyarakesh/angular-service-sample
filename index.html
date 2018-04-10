@@ -10,18 +10,21 @@
 </head>
 <body>
     <div ng-app="myShoppingList" ng-controller="myCtrl">
-        <input type="number" ng-model="value1">
-        <input type="number" ng-model="value2">
-        <p>{{sum}}</p>
-        <button ng-click="addItem()">Add</button>
+       
+        <button ng-click="addItem()">GetData</button>
+        <ul ng-repeat="data in sampledata">
+            <li>{{data.login}}</li>
+            <li>{{data.id}}</li>
+            <li>{{data.url}}</li>
+        </ul>
       </div>
 </body>
 <script>
     var app = angular.module("myShoppingList", []); 
-    app.factory('AdditionService',function(){
+    app.factory('AdditionService',function($http){
         return{
-            addTwoNumber : function(a,b){
-                return a+b;
+            addTwoNumber : function(){
+                return $http.get('https://api.github.com/users/hadley/orgs');
             }
         }
             
@@ -29,9 +32,10 @@
     })
     app.controller("myCtrl", function($scope,AdditionService) {
         $scope.addItem = function () {
-            var a = $scope.value1;
-            var b = $scope.value2;
-            $scope.sum = AdditionService.addTwoNumber(a,b)
+            AdditionService.addTwoNumber().then(function(response){
+                console.log(response)
+                $scope.sampledata = response.data
+            })
            
         }    
     });
